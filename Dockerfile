@@ -1,22 +1,25 @@
-FROM node:6
+FROM tomcat:9.0.1
 
-WORKDIR /usr/src/omcNodejs
-COPY 1.45_APM_289.zip ./
-COPY omcNodejs.zip ./
+WORKDIR /usr/local/opc
 
-ENV NODE_PATH=/usr/local/lib/node_modules
-RUN apt-get update
-RUN unzip omcNodejs.zip 
-RUN unzip 1.45_APM_289.zip -d 1.45_APM_289
+RUN apt-get  install -y unzip
+ENV CATALINA_HOME=/usr/local/tomcat
 
-WORKDIR /usr/src/omcNodejs/1.45_APM_289
-COPY registrationKey.txt ./
+COPY 1.45_APM_226.zip .
+RUN unzip 1.45_APM_226.zip -d 1.45_APM_226
+COPY regkey.txt ./1.45_APM_226
+RUN chmod 775 ./1.45_APM_226/ProvisionApmJavaAsAgent.sh
+WORKDIR /usr/local/opc/1.45_APM_226
+RUN sh ./ProvisionApmJavaAsAgent.sh -d $CATALINA_HOME -regkey-file ./regkey.txt -no-prompt  -no-wallet -h do-not-use
+ENV JAVA_OPTS="-javaagent:$CATALINA_HOME/apmagent/lib/system/ApmAgentInstrumentation.jar"
 
-RUN chmod 775 ./ProvisionApmNodeAgent.sh
-RUN bash ./ProvisionApmNodeAgent.sh -regkey-file ./registrationKey.txt -no-prompt  -no-wallet -h do-not-use
+COPY apmdemo2.war $CATALINA_HOME/webapps
+COPY sample.war $CATALINA_HOME/webapps
+expose 8080
 
-ENV  NODE_PATH=/usr/local/lib/node_modules
-EXPOSE 8080
 
-WORKDIR /usr/src/omcNodejs/omcNodejs
-CMD [ "node", "app.js" ]
+CMD ["catalina.sh", "run"]
+
+
+
+
