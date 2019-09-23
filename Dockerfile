@@ -14,7 +14,6 @@ RUN sh ./ProvisionApmJavaAsAgent.sh -d $CATALINA_HOME -regkey-file ./regkey.txt 
 ENV JAVA_OPTS="-javaagent:$CATALINA_HOME/apmagent/lib/system/ApmAgentInstrumentation.jar"
 
 COPY apmdemo2.war $CATALINA_HOME/webapps
-COPY sample.war $CATALINA_HOME/webapps
 expose 8080
 
 
