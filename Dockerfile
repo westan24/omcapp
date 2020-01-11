@@ -7,7 +7,7 @@ ENV CATALINA_HOME=/usr/local/tomcat
 
 COPY 1.45_APM_226.zip .
 RUN unzip 1.45_APM_226.zip -d 1.45_APM_226
-COPY regkey.txt ./1.45_APM_226
+COPY registrationKey.txt ./1.45_APM_226
 RUN chmod 775 ./1.45_APM_226/ProvisionApmJavaAsAgent.sh
 WORKDIR /usr/local/opc/1.45_APM_226
 RUN sh ./ProvisionApmJavaAsAgent.sh -d $CATALINA_HOME -regkey-file ./registrationKey.txt -no-prompt  -no-wallet -h do-not-use
